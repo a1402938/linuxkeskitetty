@@ -1,0 +1,48 @@
+#Linux keskitettyhallinta H2
+Joonas laulainen
+Tein tehtävän xubuntu 16.04 64bit linuxilla joka on asennettuna virtualboxiin
+Koneeni tiedot:
+GPU NVIDIA GeForce gtx 1070, CPU AMD FX-8350 4,5GHz, memory ddr3 24Gb 1333 MHz
+
+Aluksi asensin gitin
+	sudo apt-get install git
+määrittin git käyttäjä tiedot
+	git config --global user.email
+	git config --global user.name""
+coolnasin git repositoryn 
+git clone https://github.com/a1402938/linuxkeskitetty.git
+
+nyt on git luotu ja aloin tekemään modulea
+
+aluksi poistin apache2:sen ja index.html tiedoston
+	sudo apt-get purge apache2
+	sudo rm /var&www/html/index.html
+loin modulen ja siihen tarvittavat kansiot, menin aluksi puppet/modules kansioon
+	cd puppet/modules
+	mkdir apache2
+	mkdir manifests
+	nano init.pp
+init.pp tiedoston sisältö näyttää tältä
+	class apache2{
+		package{'apache2':
+			ensure => installed'
+		}
+		file {'/var/www/html/index.html':
+			content => "Tämä on testi H2 varten!/n".
+			require => package ["apache2"],
+		}
+	}
+menin kansioon puppet ja ajoin komennon 
+	sudo puppet apply --modulepath modules/ -e 'class {"apache2":}'
+
+komento ajoi modulen joka asensi siis apache2 ja muutti sen oletus sivuki tekstin Tämä on testi H2 varten!
+
+Tarkistin oliko index.html sisältö muuttunut avaamalla firefoxin ja yhistämällä localhost sivustoon. Teksti oli muuttunut
+
+käytin tehtävässä tunnilla opittuja taitoja 
+
+
+
+Lähteet
+http://terokarvinen.com/2012/hello-puppet-on-ubuntu-12-04-lts
+http://terokarvinen.com/2016/publish-your-project-with-github
